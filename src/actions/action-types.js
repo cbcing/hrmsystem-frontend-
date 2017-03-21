@@ -1,0 +1,1 @@
+export const QRCODE_REQUEST = 'QRCODE_REQUEST'
