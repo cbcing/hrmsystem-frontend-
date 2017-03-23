@@ -1,17 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Router, hashHistory } from 'react-router';
-import routes from './routes';
-import { createStore, applyMiddleware } from redux
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { Router, hashHistory } from 'react-router'
+import { Provider } from 'react-redux'
+import routes from './routes'
+import configureStore from './store/configureStore'
 
-/*创建Redux的Store。
-  应该传入Reducer以便让Redux知道如何处理传入的Action
-*/
+// const store = createStore(
+// 	combineReducers({userReducer, qrcodes})
+// )
+const store = configureStore()
 
-const store = createStore(
-	() => {}
-)
+var setNameActionCreator = function(name) {
+	return {
+		type: 'SET_NAME',
+		name: name
+	}
+}
+// store.dispatch(setNameActionCreator('Bob'))
+console.log(store.getState())
 
+//Provider连接了store与组件，以便让组件可以访问store的状态state
 ReactDOM.render(
-  <Router routes={routes} history={hashHistory} />, document.getElementById('root')
+	<Provider store={store}>
+		<Router routes={routes} history={hashHistory} />
+	</Provider>, 
+	document.getElementById('root')
 );
