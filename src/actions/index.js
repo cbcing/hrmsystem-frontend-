@@ -6,7 +6,34 @@
 */
 import * as types from './action-types'
 
-export const saveQrcode = (qrcode) => ({
-	type: types.QRCODE_REQUEST,
-	data: qrcode
+//定义若干个action
+const addQrcodeSuccess = item => ({
+	type: types.QRCODE_ADD_SUCCESS,
+	item: item
 })
+
+//导出action creators，它们创建真正的action（或者说返回真正的action）
+//这是一个异步的action creator，它会调用我们的API，当调用完成后才会dispatch action
+// export const getAllQrcodes = () => dispatch => {
+// 	qrcode.getItems(items => {
+// 		dispatch(receiveQrcodes(items))
+// 	})
+// }
+
+export const saveQrcode = (item) => dispatch => {
+	let url = '/api/QrCodes'
+	let options = { 
+		method : 'POST',
+    body : JSON.stringify(item),
+  	headers: {
+    	"Content-Type": "application/json"
+  	}
+  }
+
+	fetch(url, options)
+		.then(res => res.json())
+		.then(data => {
+			dispatch(addQrcodeSuccess(data))
+		})
+		.catch(e => console.log('访问后台出错了', e))
+}

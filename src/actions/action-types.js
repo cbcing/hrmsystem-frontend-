@@ -1,1 +1,6 @@
 export const QRCODE_REQUEST = 'QRCODE_REQUEST'
+export const QRCODE_LIST = 'QRCODE_LIST'
+export const QRCODE_ADD = 'QRCODE_ADD'
+export const QRCODE_DEL = 'QRCODE_DEL'
+export const QRCODE_UPDATE = 'QRCODE_UPDATE'
+export const QRCODE_ADD_SUCCESS ='QRCODE_ADD_SUCCESS'
