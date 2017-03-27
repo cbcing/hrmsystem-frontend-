@@ -11,6 +11,10 @@ const addQrcodeSuccess = item => ({
 	type: types.QRCODE_ADD_SUCCESS,
 	item: item
 })
+const addQrcode = item => ({
+	type: types.QRCODE_ADD,
+	item: item
+})
 
 //导出action creators，它们创建真正的action（或者说返回真正的action）
 //这是一个异步的action creator，它会调用我们的API，当调用完成后才会dispatch action
@@ -20,8 +24,13 @@ const addQrcodeSuccess = item => ({
 // 	})
 // }
 
-export const saveQrcode = (item) => dispatch => {
-	let url = '/api/QrCodes'
+
+//真正的业务逻辑执行单元，完成几个任务：
+//1.分发一个action表示已经开始访问后台，以便界面卡住；
+//2.执行访问后台的代码（fetch)
+//3.成功后分发action以便界面取消卡住状态并显示后台数据
+export const addQrcodeCreator = (item) => dispatch => {
+	dispatch(addQrcode(item))
 	let options = { 
 		method : 'POST',
     body : JSON.stringify(item),
@@ -30,7 +39,7 @@ export const saveQrcode = (item) => dispatch => {
   	}
   }
 
-	fetch(url, options)
+	return fetch("/api/QrCodes", options)
 		.then(res => res.json())
 		.then(data => {
 			dispatch(addQrcodeSuccess(data))

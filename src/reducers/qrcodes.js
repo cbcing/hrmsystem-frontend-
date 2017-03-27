@@ -9,11 +9,13 @@ const qrcodes = (state={}, action) => {
 		case types.QRCODE_ADD:
 			return {
 				...state,
+				isFetching: true,
 				item: action.item
 			}
 		case types.QRCODE_ADD_SUCCESS:
 			return {
 				...state,
+				isFetching: false,
 				item: action.item
 			}
 		case 'LIST_ITEM':

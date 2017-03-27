@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import ReduxBlockUi from 'react-block-ui/redux'
+import 'react-block-ui/style.css'
 import * as actions from '../../actions'
 
 const Qrcode =({onSave}) => {
@@ -14,6 +16,7 @@ const Qrcode =({onSave}) => {
         }
         onSave(nameInput.value)
       }}>
+      <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
       <div className="row">
         <div className="col-md-6">
           <div className="card">
@@ -40,7 +43,8 @@ const Qrcode =({onSave}) => {
                 <div className="col-sm-12">
                   <div className="form-group">
                     <label htmlFor="ccnumber">获取网址</label>
-                    <input type="text" className="form-control" id="qrcode_url" placeholder="自动生成，不可修改" disabled/>
+                    <input type="text" className="form-control" id="qrcode_url" placeholder="自动生成，不可修改" disabled
+                      value=""/>
                   </div>
                 </div>
               </div>
@@ -53,6 +57,7 @@ const Qrcode =({onSave}) => {
           </div>
         </div>
       </div>
+      </ReduxBlockUi>
       </form>
     </div>
   )
@@ -63,12 +68,12 @@ const Qrcode =({onSave}) => {
 // 来挑选当前组件应该感兴趣的状态。
 const mapStateToProps = (state/*, props*/) => {
   return {
-    qrcode: state.qrcode
+    item: state.item
   }
 }
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onSave: (name) => {
-    actions.saveQrcode({name: name})(dispatch)
+    actions.addQrcodeCreator({name: name})(dispatch)
   }
 })
 
