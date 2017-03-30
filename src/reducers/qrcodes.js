@@ -18,7 +18,18 @@ const qrcodes = (state={}, action) => {
 				isFetching: false,
 				item: action.item
 			}
-		case 'LIST_ITEM':
+		case types.QRCODE_FETCH_LIST:
+			return {
+				...state,
+				isFetching: true
+			}
+		case types.QRCODE_FETCH_LIST_SUCCESS:
+			return {
+				...state,
+				isFetching: false,
+				items: action.items
+			}
+		case types.QRCODE_LOADED:
 			return {
 				...state,
 				item: action.item

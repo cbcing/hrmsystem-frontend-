@@ -15,6 +15,18 @@ const addQrcode = item => ({
 	type: types.QRCODE_ADD,
 	item: item
 })
+const fetchQrcodes = (limit) => ({
+	type: types.QRCODE_FETCH_LIST,
+	limit: limit
+})
+const fetchQrcodesSuccess = (items) => ({
+	type: types.QRCODE_FETCH_LIST_SUCCESS,
+	items: items
+})
+const loadQrcode = (item) => ({
+	type: types.QRCODE_LOADED,
+	item: item
+})
 
 //导出action creators，它们创建真正的action（或者说返回真正的action）
 //这是一个异步的action creator，它会调用我们的API，当调用完成后才会dispatch action
@@ -45,4 +57,26 @@ export const addQrcodeCreator = (item) => dispatch => {
 			dispatch(addQrcodeSuccess(data))
 		})
 		.catch(e => console.log('访问后台出错了', e))
+}
+
+export const fetchQrcodesCreator = (limit) => (dispatch, getState) => {
+	dispatch(fetchQrcodes(limit))
+
+	return fetch("/api/QrCodes")
+		.then(res => res.json())
+		.then(data => {
+			dispatch(fetchQrcodesSuccess(data))
+		})
+		.catch(e => console.log('获取二维码列表出错了', e))
+}
+
+export const loadQrcodesCreator = (id) => (dispatch, getState) => {
+	const { qrcodes } = getState()
+	let item = {}
+	if (qrcodes.items) {
+		item = qrcodes.items.find(it => {
+			return it.id === id
+		})
+	}
+	dispatch(loadQrcode(item))
 }

@@ -4,17 +4,18 @@ import ReduxBlockUi from 'react-block-ui/redux'
 import { Link } from 'react-router'
 import 'react-block-ui/style.css'
 import { Button, ButtonToolbar,FormGroup,ControlLabel,FormControl,Image } from 'react-bootstrap'
-import * as actions from '../../actions'
+import {loadQrcodesCreator, addQrcodeCreator} from '../../actions'
 
-class Qrcode extends Component {
+class QrcodeEdit extends Component {
   static propTypes = {
     item: PropTypes.object,
-    onSave: PropTypes.func.isRequired
+    addQrcodeCreator: PropTypes.func.isRequired,
+    loadQrcodesCreator: PropTypes.func.isRequired
   }
 
   componentDidMount() {
-    const {dispatch} = this.props
-    console.log('dispatch', dispatch);
+    const {params} = this.props
+    this.props.loadQrcodesCreator(params.id)
   }
 
   handleSubmit = e => {
@@ -22,12 +23,16 @@ class Qrcode extends Component {
     if (!this.nameInput.value.trim()) {
       return
     }
-    this.props.onSave(this.nameInput.value)
+    this.props.addQrcodeCreator(this.nameInput.value)
   }
 
   render() {
     const { item } = this.props
     console.log('render item', item)
+    const myprops = item.name ? {
+      value: item.name,
+      src: "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + item.ticket
+    } : {}
     return (
       <div className="animated fadeIn">
         <form onSubmit={this.handleSubmit}>
@@ -37,7 +42,7 @@ class Qrcode extends Component {
           <div className="col-md-6">
             <div className="card">
               <div className="card-header">
-                <strong>新建二维码</strong>
+                <strong>Edit二维码</strong>
               </div>
               <div className="card-block">
                 <FormGroup controlId="saveQrcodeForm">
@@ -47,13 +52,14 @@ class Qrcode extends Component {
                       <div className="form-group">
                         <label htmlFor="name">名称</label>
                         <input type="text" className="form-control" id="name" 
-                          placeholder="便于识别二维码的拥有人或摆放场合"
+                          placeholder="便于识别二维码的拥有人或摆放场合" defaultValue="test" {...myprops}
                           ref={node => { this.nameInput = node }} />
                       </div>
                     </div>
                   </div>
                   <ControlLabel>二维码</ControlLabel>
-                  <Image src={item.imgurl} rounded />
+                  <Image src='/img/logo3.jpg' {...myprops} rounded />
+                  
                   <ControlLabel>URL</ControlLabel>
                   <FormControl type="text" disabled="true" value={item.url}>
                   </FormControl>
@@ -89,22 +95,14 @@ class Qrcode extends Component {
 const mapStateToProps = (state/*, props*/) => {
   //qrcodes这个reducer返回的数据被放在qrcodes这个key下
   const { qrcodes } = state
-  console.log('state', qrcodes);
 
   return {
-    item: qrcodes.item ? {...qrcodes.item, imgurl:'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='+qrcodes.item.ticket } : {}
+    item: qrcodes.item ? qrcodes.item : {}
   }
 }
-// 为组件提供事件处理方法
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  onSave: (name) => {
-    actions.addQrcodeCreator({name: name})(dispatch)
-  }
-})
 
 //connect用于连接react组件与redux的store中的状态
-// 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
-)(Qrcode);
+  {addQrcodeCreator, loadQrcodesCreator}
+)(QrcodeEdit);

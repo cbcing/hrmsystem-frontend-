@@ -1,12 +1,20 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
+import React, { Component,PropTypes } from 'react'
+import { connect } from 'react-redux'
+import { Link } from 'react-router'
+import * as actions from '../../actions'
 
 class Qrcodes extends Component {
-  handleAdd() {
-    console.log('clicked add');
+  static propTypes = {
+    items: PropTypes.array.isRequired,
+    onLoad: PropTypes.func.isRequired
+  }
+
+  componentDidMount() {
+    this.props.onLoad(0)
   }
 
   render() {
+    const { items } = this.props
     return (
       <div className="animated fadeIn">
         <div className="row">
@@ -18,73 +26,38 @@ class Qrcodes extends Component {
               <div className="card-block">
                 <div className="btn-toolbar">
                 <Link to="/links/qrcode">
-                <button type="button" className="btn btn-primary fa fa-plus">新建二维码</button>
+                <button type="button" className="btn btn-primary fa fa-plus"> 新建二维码</button>
                 </Link>
               </div>
               <table className="table table-bordered table-striped table-condensed">
                 <thead>
                   <tr>
+                    <th>场景编号</th>
                     <th>名称</th>
                     <th>创建日期</th>
-                    <th>最近扫描</th>
+                    <th>关注次数</th>
+                    <th>扫描次数</th>
                     <th>二维码</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Vishnu Serghei</td>
-                    <td>2012/01/01</td>
-                    <td>Member</td>
-                    <td>
-                      <span className="badge badge-success">Active</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Zbyněk Phoibos</td>
-                    <td>2012/02/01</td>
-                    <td>Staff</td>
-                    <td>
-                      <span className="badge badge-danger">Banned</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Einar Randall</td>
-                    <td>2012/02/01</td>
-                    <td>Admin</td>
-                    <td>
-                      <span className="badge badge-default">Inactive</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Félix Troels</td>
-                    <td>2012/03/01</td>
-                    <td>Member</td>
-                    <td>
-                      <span className="badge badge-warning">Pending</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Aulus Agmundr</td>
-                    <td>2012/01/21</td>
-                    <td>Staff</td>
-                    <td>
-                      <span className="badge badge-success">Active</span>
-                    </td>
-                  </tr>
+                  {items.map((item, i) =>
+                    <tr key={i}>
+                      <td>{item.scene}</td>
+                      <td>{item.name}</td>
+                      <td>{item.createDate}</td>
+                      <td>0</td>
+                      <td>0</td>
+                      <td>
+                        <Link to={"/links/qrcode/"+item.id} >
+                          <button type="button" className="btn btn-secondary fa fa-info"> 查看</button>
+                        </Link>
+                      </td>
+                    </tr>
+                  )}
+                  
                 </tbody>
               </table>
-              <nav>
-                <ul className="pagination">
-                  <li className="page-item"><a className="page-link" href="#">Prev</a></li>
-                  <li className="page-item active">
-                    <a className="page-link" href="#">1</a>
-                  </li>
-                  <li className="page-item"><a className="page-link" href="#">2</a></li>
-                  <li className="page-item"><a className="page-link" href="#">3</a></li>
-                  <li className="page-item"><a className="page-link" href="#">4</a></li>
-                  <li className="page-item"><a className="page-link" href="#">Next</a></li>
-                </ul>
-              </nav>
               </div>
             </div>
           </div>
@@ -95,4 +68,26 @@ class Qrcodes extends Component {
   }
 }
 
-export default Qrcodes;
+// 由于store中的状态数据太多，一般不要直接全部暴露给一个组件，所以写一个mapStateToProps的方法
+// 来挑选当前组件应该感兴趣的状态。
+const mapStateToProps = (state/*, props*/) => {
+  //qrcodes这个reducer返回的数据被放在qrcodes这个key下
+  const { qrcodes } = state
+
+  return {
+    items: qrcodes.items || []
+  }
+}
+// 为组件提供事件处理方法
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  onLoad: (limit) => {
+    actions.fetchQrcodesCreator(limit)(dispatch)
+  }
+})
+
+//connect用于连接react组件与redux的store中的状态
+// 
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Qrcodes);
