@@ -46,8 +46,8 @@ class Qrcodes extends Component {
                       <td>{item.scene}</td>
                       <td>{item.name}</td>
                       <td>{item.createDate}</td>
-                      <td>0</td>
-                      <td>0</td>
+                      <td>{item.subCount}</td>
+                      <td>{item.scanCount}</td>
                       <td>
                         <Link to={"/links/qrcode/"+item.id} >
                           <button type="button" className="btn btn-secondary fa fa-info"> 查看</button>

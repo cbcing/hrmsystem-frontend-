@@ -72,7 +72,6 @@ class QrcodeEdit extends Component {
 
               <div className="card-footer">
                 <ButtonToolbar>
-                  <Button bsStyle="primary" type="submit">生成二维码</Button>
 
                   <Link to="/links/qrcodes">
                     <Button bsStyle="warning">返回</Button>
