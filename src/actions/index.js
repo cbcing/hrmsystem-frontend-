@@ -27,6 +27,10 @@ const loadQrcode = (item) => ({
 	type: types.QRCODE_LOADED,
 	item: item
 })
+const changeQrcode = (name) => ({
+	type: types.QRCODE_UPDATE,
+	name: name
+})
 
 //导出action creators，它们创建真正的action（或者说返回真正的action）
 //这是一个异步的action creator，它会调用我们的API，当调用完成后才会dispatch action
@@ -73,10 +77,20 @@ export const fetchQrcodesCreator = (limit) => (dispatch, getState) => {
 export const loadQrcodesCreator = (id) => (dispatch, getState) => {
 	const { qrcodes } = getState()
 	let item = {}
-	if (qrcodes.items) {
+	if (qrcodes.items) {  //如果当前状态中已有数据则直接读取
 		item = qrcodes.items.find(it => {
 			return it.id === id
 		})
+		dispatch(loadQrcode(item))
+	} else { //没有则访问网络去读取
+		fetch("/api/QrCodes/"+id)
+			.then(res => res.json())
+			.then(data => {
+				dispatch(loadQrcode(data))
+			}) 
 	}
-	dispatch(loadQrcode(item))
+}
+
+export const changeQrcodeCreator = (name) => (dispatch) => {
+	dispatch(changeQrcode(name))
 }

@@ -3,14 +3,22 @@ import { connect } from 'react-redux'
 import ReduxBlockUi from 'react-block-ui/redux'
 import { Link } from 'react-router'
 import 'react-block-ui/style.css'
-import { Button, ButtonToolbar,FormGroup,ControlLabel,FormControl,Image } from 'react-bootstrap'
-import {loadQrcodesCreator, addQrcodeCreator} from '../../actions'
+import {loadQrcodesCreator, addQrcodeCreator, changeQrcodeCreator } from '../../actions'
+import { Row, Col, Card, CardBlock, Form, FormGroup, Label, Input, Button } from 'reactstrap'
 
 class QrcodeEdit extends Component {
   static propTypes = {
     item: PropTypes.object,
     addQrcodeCreator: PropTypes.func.isRequired,
     loadQrcodesCreator: PropTypes.func.isRequired
+  }
+
+  constructor(props, ctx) {
+    super(props, ctx)
+    this.state = {
+      name: ''
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -20,70 +28,91 @@ class QrcodeEdit extends Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    if (!this.nameInput.value.trim()) {
+    if (!this.state.name) {
       return
     }
-    this.props.addQrcodeCreator(this.nameInput.value)
+    this.props.addQrcodeCreator(this.state.name)
+  }
+
+  handleNameChange = e => {
+    console.log('target', e.target.value)
+
+    this.props.changeQrcodeCreator(e.target.value)
   }
 
   render() {
     const { item } = this.props
-    console.log('render item', item)
-    const myprops = item.name ? {
+    console.log('render', item)
+    if (!item) {
+      return (
+        <h3>Loading...</h3>
+      )
+    }
+    const myprops =  {
       value: item.name,
       src: "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + item.ticket
-    } : {}
+    }
+    console.log('myprops', myprops)
     return (
-      <div className="animated fadeIn">
-        <form onSubmit={this.handleSubmit}>
-        <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
+        <Card>
+          <CardBlock>
+            <Form  onSubmit={this.handleSubmit}>
+            <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
+              <Row>
+                <Col xs="12" md="2">
+                  <Row className="justify-content-center">
+                    <Col xs="6" md="12">
+                      <img src="/img/logo3.png"  {...myprops} className="img-fluid mx-auto d-block" alt="er wei ma"/>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col xs="12" md="10">
+                  <Row>
+                    <Col xs="5">
+                        <Label>场景编号: {item.scene}</Label>
+                    </Col>
+                    <Col xs="7">
+                        <Label>关注/总扫码数:121/13132</Label>
+                    </Col>
+                    <Col xs="12">
+                      <FormGroup row>
+                        <Label for="name" sm={2} xl={1}>名称:</Label>
+                        <Col sm={10} xl={11}>
+                          <input type="text" className="form-control" id="name" 
+                            placeholder="便于识别二维码的拥有人或摆放场合" 
+                            {...myprops} 
+                            onChange={e => this.handleNameChange(e)}/>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col xs="12">
+                      <FormGroup row>
+                        <Label for="url" sm={2} xl={1}>URL:</Label>
+                        <Col sm={10} xl={11}>
+                          <Input id="url" name="url" disabled value={item.url}/>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col xs="12">
+                      <FormGroup row>
+                        <Label for="ticket" sm={2} xl={1}>Ticket:</Label>
+                        <Col sm={10} xl={11}>
+                          <Input id="ticket" name="ticket" disabled  value={item.ticket}/>
+                        </Col>
+                      </FormGroup>
+                    </Col>
+                    <Col xs={12}>
+                      <Button color="primary" type="submit">保存修改</Button>
+                      <Button color="secondary" tag={Link} to="/links/qrcodes">返回</Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </ReduxBlockUi>
+            </Form>
+          </CardBlock>
           
-        <div className="row">
-          <div className="col-md-6">
-            <div className="card">
-              <div className="card-header">
-                <strong>Edit二维码</strong>
-              </div>
-              <div className="card-block">
-                <FormGroup controlId="saveQrcodeForm">
-                  <div className="row">
-
-                    <div className="col-sm-12">
-                      <div className="form-group">
-                        <label htmlFor="name">名称</label>
-                        <input type="text" className="form-control" id="name" 
-                          placeholder="便于识别二维码的拥有人或摆放场合" defaultValue="test" {...myprops}
-                          ref={node => { this.nameInput = node }} />
-                      </div>
-                    </div>
-                  </div>
-                  <ControlLabel>二维码</ControlLabel>
-                  <Image src='/img/logo3.jpg' {...myprops} rounded />
-                  
-                  <ControlLabel>URL</ControlLabel>
-                  <FormControl type="text" disabled="true" value={item.url}>
-                  </FormControl>
-
-                  <ControlLabel>Ticket {item.scene}</ControlLabel>
-                  <FormControl type="text" disabled="true" value={item.ticket}>
-                  </FormControl>
-                </FormGroup>
-              </div>
-
-              <div className="card-footer">
-                <ButtonToolbar>
-
-                  <Link to="/links/qrcodes">
-                    <Button bsStyle="warning">返回</Button>
-                  </Link>
-                </ButtonToolbar>
-              </div>
-            </div>
-          </div>
-        </div>
-        </ReduxBlockUi>
-        </form>
-      </div>
+        </Card>
     ) 
   }
 }
@@ -94,14 +123,14 @@ class QrcodeEdit extends Component {
 const mapStateToProps = (state/*, props*/) => {
   //qrcodes这个reducer返回的数据被放在qrcodes这个key下
   const { qrcodes } = state
-
+console.log('map props:', state)
   return {
-    item: qrcodes.item ? qrcodes.item : {}
+    item: qrcodes.item
   }
 }
 
 //connect用于连接react组件与redux的store中的状态
 export default connect(
   mapStateToProps,
-  {addQrcodeCreator, loadQrcodesCreator}
+  {addQrcodeCreator, loadQrcodesCreator, changeQrcodeCreator}
 )(QrcodeEdit);

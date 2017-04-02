@@ -34,6 +34,16 @@ const qrcodes = (state={}, action) => {
 				...state,
 				item: action.item
 			}
+		case types.QRCODE_UPDATE:
+			let {item} = state
+			if (item) {
+				item.name = action.name
+			}
+			console.log('state', state)
+			return {
+				...state,
+				item: item
+			}
 		default:
 			return state;
 	}
