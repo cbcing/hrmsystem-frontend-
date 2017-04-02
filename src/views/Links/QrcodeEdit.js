@@ -80,7 +80,7 @@ class QrcodeEdit extends Component {
                         <Col sm={10} xl={11}>
                           <input type="text" className="form-control" id="name" 
                             placeholder="便于识别二维码的拥有人或摆放场合" 
-                            {...myprops} 
+                            value={item.name}
                             onChange={e => this.handleNameChange(e)}/>
                         </Col>
                       </FormGroup>
