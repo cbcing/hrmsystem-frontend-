@@ -3,14 +3,15 @@ import { connect } from 'react-redux'
 import ReduxBlockUi from 'react-block-ui/redux'
 import { Link } from 'react-router'
 import 'react-block-ui/style.css'
-import {loadQrcodesCreator, addQrcodeCreator, changeQrcodeCreator } from '../../actions'
+import {loadQrcodeCreator, updateQrcodeCreator,updateQrcodeRequestCreator } from '../../actions'
 import { Row, Col, Card, CardBlock, Form, FormGroup, Label, Input, Button } from 'reactstrap'
 
 class QrcodeEdit extends Component {
   static propTypes = {
     item: PropTypes.object,
-    addQrcodeCreator: PropTypes.func.isRequired,
-    loadQrcodesCreator: PropTypes.func.isRequired
+    loadQrcodeCreator: PropTypes.func.isRequired,
+    updateQrcodeCreator: PropTypes.func.isRequired,
+    updateQrcodeRequestCreator: PropTypes.func.isRequired
   }
 
   constructor(props, ctx) {
@@ -23,21 +24,23 @@ class QrcodeEdit extends Component {
 
   componentDidMount() {
     const {params} = this.props
-    this.props.loadQrcodesCreator(params.id)
+    this.props.loadQrcodeCreator(params.id)
   }
 
   handleSubmit = e => {
     e.preventDefault()
-    if (!this.state.name) {
+    console.log('submit item', this.props.item)
+    if (!this.props.item || !this.props.item.name) {
+      alert('name is required.')
       return
     }
-    this.props.addQrcodeCreator(this.state.name)
+    this.props.updateQrcodeRequestCreator(this.props.item)
   }
 
   handleNameChange = e => {
     console.log('target', e.target.value)
 
-    this.props.changeQrcodeCreator(e.target.value)
+    this.props.updateQrcodeCreator(e.target.value)
   }
 
   render() {
@@ -49,7 +52,6 @@ class QrcodeEdit extends Component {
       )
     }
     const myprops =  {
-      value: item.name,
       src: "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + item.ticket
     }
     console.log('myprops', myprops)
@@ -132,5 +134,5 @@ console.log('map props:', state)
 //connect用于连接react组件与redux的store中的状态
 export default connect(
   mapStateToProps,
-  {addQrcodeCreator, loadQrcodesCreator, changeQrcodeCreator}
+  {loadQrcodeCreator, updateQrcodeCreator, updateQrcodeRequestCreator}
 )(QrcodeEdit);

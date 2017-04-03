@@ -36,18 +36,17 @@ const qrcodes = (state={}, action) => {
 			}
 		case types.QRCODE_UPDATE:
 			let {item} = state
-			
-			// if (item) {
-			// 	item.name = action.name
-			// }
-
-			console.log('state', state)
 			return {
 				...state,
 				item: Object.assign({}, item, {
 					name: action.name
 				})
 			}
+		case types.QRCODE_UPDATE_REQUEST:
+			return state
+		case types.QRCODE_UPDATE_SUCCESS:
+			//TODO 修改列表数组中对应的元素
+			return state
 		default:
 			return state;
 	}

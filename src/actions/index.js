@@ -31,6 +31,14 @@ const changeQrcode = (name) => ({
 	type: types.QRCODE_UPDATE,
 	name: name
 })
+const updateQrcode = item => ({
+	type: types.QRCODE_UPDATE_REQUEST,
+	item: item
+})
+const updateQrcodeSuccess = item => ({
+	type: types.QRCODE_UPDATE_SUCCESS,
+	item: item
+})
 
 //导出action creators，它们创建真正的action（或者说返回真正的action）
 //这是一个异步的action creator，它会调用我们的API，当调用完成后才会dispatch action
@@ -74,7 +82,7 @@ export const fetchQrcodesCreator = (limit) => (dispatch, getState) => {
 		.catch(e => console.log('获取二维码列表出错了', e))
 }
 
-export const loadQrcodesCreator = (id) => (dispatch, getState) => {
+export const loadQrcodeCreator = (id) => (dispatch, getState) => {
 	const { qrcodes } = getState()
 	let item = {}
 	if (qrcodes.items) {  //如果当前状态中已有数据则直接读取
@@ -91,6 +99,27 @@ export const loadQrcodesCreator = (id) => (dispatch, getState) => {
 	}
 }
 
-export const changeQrcodeCreator = (name) => (dispatch) => {
+//用户修改网页中某个输入时
+export const updateQrcodeCreator = (name) => (dispatch) => {
 	dispatch(changeQrcode(name))
+}
+
+//用户点击保存修改时
+export const updateQrcodeRequestCreator = (item) => (dispatch) => {
+	dispatch(updateQrcode(item))
+	let {id, ...updates} = item
+	let options = { 
+		method : 'PUT',
+    body : JSON.stringify(updates),
+  	headers: {
+    	"Content-Type": "application/json"
+  	}
+  }
+
+	return fetch("/api/QrCodes/"+item.id, options)
+		.then(res => res.json())
+		.then(data => {
+			dispatch(updateQrcodeSuccess(data))
+		})
+		.catch(e => console.log('更新二维码时出错了', e))
 }
