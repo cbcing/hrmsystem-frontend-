@@ -5,6 +5,7 @@
  但本身仅仅是一个标志而已，若没有其它部分的配合它什么功能都没有。
 */
 import * as types from './action-types'
+import { addNotification as notify } from 'reapop'
 
 //定义若干个action
 const addQrcodeSuccess = item => ({
@@ -120,6 +121,7 @@ export const updateQrcodeRequestCreator = (item) => (dispatch) => {
 		.then(res => res.json())
 		.then(data => {
 			dispatch(updateQrcodeSuccess(data))
+			dispatch(notify({message: '操作成功', status: 'success'}))
 		})
 		.catch(e => console.log('更新二维码时出错了', e))
 }

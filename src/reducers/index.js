@@ -5,6 +5,7 @@
 
 import { combineReducers } from 'redux'
 import qrcodes from './qrcodes'
+import { reducer as notificationsReducer } from 'reapop'
 
 //一个测试的reducer
 const userReducer = (state={}, action) => {
@@ -20,6 +21,7 @@ const userReducer = (state={}, action) => {
 }
 
 const rootReducers = combineReducers({
+	notifications: notificationsReducer(),
 	qrcodes, 
 	userReducer
 })

@@ -5,11 +5,14 @@ import Aside from '../../components/Aside/';
 import Footer from '../../components/Footer/';
 
 import Breadcrumbs from 'react-breadcrumbs';
+import NotificationsSystem from 'reapop';
+import theme from 'reapop-theme-wybo';
 
 class Full extends Component {
   render() {
     return (
       <div className="app">
+        <NotificationsSystem theme={theme}/>
         <Header />
         <div className="app-body">
           <Sidebar {...this.props}/>
