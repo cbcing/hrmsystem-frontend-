@@ -6,6 +6,11 @@ import * as types from '../actions/action-types'
 //通常我们还会在action中附带数据以便reducer处理
 const qrcodes = (state={}, action) => {
 	switch (action.type) {
+		case types.QRCODE_NEW:
+			return {
+				...state,
+				item: null
+			}
 		case types.QRCODE_ADD:
 			return {
 				...state,

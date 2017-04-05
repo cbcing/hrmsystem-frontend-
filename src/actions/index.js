@@ -8,6 +8,9 @@ import * as types from './action-types'
 import { addNotification as notify } from 'reapop'
 
 //定义若干个action
+export const newQrcode = () => ({
+	type: types.QRCODE_NEW
+})
 const addQrcodeSuccess = item => ({
 	type: types.QRCODE_ADD_SUCCESS,
 	item: item

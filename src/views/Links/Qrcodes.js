@@ -45,7 +45,7 @@ class Qrcodes extends Component {
                     <tr key={i}>
                       <td>{item.scene}</td>
                       <td>{item.name}</td>
-                      <td>{item.createDate}</td>
+                      <td>{new Date(item.createDate).toLocaleDateString()}</td>
                       <td>{item.subCount}</td>
                       <td>{item.scanCount}</td>
                       <td>

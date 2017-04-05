@@ -3,18 +3,19 @@ import { connect } from 'react-redux'
 import ReduxBlockUi from 'react-block-ui/redux'
 import { Link } from 'react-router'
 import 'react-block-ui/style.css'
-import { Button, ButtonToolbar,FormGroup,ControlLabel,FormControl,Image } from 'react-bootstrap'
 import * as actions from '../../actions'
+import { Row, Col, Card, CardBlock, Form, FormGroup, Label, Input, Button } from 'reactstrap'
 
 class Qrcode extends Component {
   static propTypes = {
     item: PropTypes.object,
-    onSave: PropTypes.func.isRequired
+    onSave: PropTypes.func.isRequired,
+    onNew: PropTypes.func.isRequired
   }
 
   componentDidMount() {
-    const {dispatch} = this.props
-    console.log('dispatch', dispatch);
+    console.log('new code mount')
+    this.props.onNew()
   }
 
   handleSubmit = e => {
@@ -28,57 +29,129 @@ class Qrcode extends Component {
   render() {
     const { item } = this.props
     console.log('render item', item)
-    return (
-      <div className="animated fadeIn">
-        <form onSubmit={this.handleSubmit}>
-        <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
-          
-        <div className="row">
-          <div className="col-md-6">
-            <div className="card">
-              <div className="card-header">
-                <strong>新建二维码</strong>
-              </div>
-              <div className="card-block">
-                <FormGroup controlId="saveQrcodeForm">
-                  <div className="row">
-
-                    <div className="col-sm-12">
-                      <div className="form-group">
-                        <label htmlFor="name">名称</label>
+    if (!item) {
+      return (
+        <Card>
+          <CardBlock>
+          <Form  onSubmit={this.handleSubmit}>
+          <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
+            <Row>
+              <Col xs="12" md="2">
+                <Row className="justify-content-center">
+                  <Col xs="6" md="12">
+                    <img src="/img/logo3.png"  className="img-fluid mx-auto d-block" alt="er wei ma"/>
+                  </Col>
+                </Row>
+              </Col>
+              <Col xs="12" md="10">
+                <Row>
+                  <Col xs="5">
+                      <Label>场景编号: - </Label>
+                  </Col>
+                  <Col xs="7">
+                      <Label>关注/总扫码数:- </Label>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="name" sm={2} xl={1}>名称:</Label>
+                      <Col sm={10} xl={11}>
                         <input type="text" className="form-control" id="name" 
-                          placeholder="便于识别二维码的拥有人或摆放场合"
-                          ref={node => { this.nameInput = node }} />
-                      </div>
-                    </div>
-                  </div>
-                  <ControlLabel>二维码</ControlLabel>
-                  <Image src={item.imgurl} rounded />
-                  <ControlLabel>URL</ControlLabel>
-                  <FormControl type="text" disabled="true" value={item.url}>
-                  </FormControl>
+                        placeholder="便于识别二维码的拥有人或摆放场合"
+                        ref={node => { this.nameInput = node }} />
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="url" sm={2} xl={1}>URL:</Label>
+                      <Col sm={10} xl={11}>
+                        <Input id="url" name="url" disabled/>
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="ticket" sm={2} xl={1}>Ticket:</Label>
+                      <Col sm={10} xl={11}>
+                        <Input id="ticket" name="ticket" disabled />
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={12}>
+                    <Button color="primary" type="submit">保存修改</Button>
+                    <Button color="secondary" tag={Link} to="/links/qrcodes">返回</Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </ReduxBlockUi>
+          </Form>
+        </CardBlock>
+      </Card>
+      )  //return END
+    }
+    const myprops =  {
+      src: "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + item.ticket
+    }
 
-                  <ControlLabel>Ticket {item.scene}</ControlLabel>
-                  <FormControl type="text" disabled="true" value={item.ticket}>
-                  </FormControl>
-                </FormGroup>
-              </div>
-
-              <div className="card-footer">
-                <ButtonToolbar>
-                  <Button bsStyle="primary" type="submit">生成二维码</Button>
-
-                  <Link to="/links/qrcodes">
-                    <Button bsStyle="warning">返回</Button>
-                  </Link>
-                </ButtonToolbar>
-              </div>
-            </div>
-          </div>
-        </div>
-        </ReduxBlockUi>
-        </form>
-      </div>
+    return (
+      <Card>
+        <CardBlock>
+          <Form  onSubmit={this.handleSubmit}>
+          <ReduxBlockUi tag="div" block="QRCODE_ADD" unblock={["QRCODE_ADD_SUCCESS", /fail/i]}>
+            <Row>
+              <Col xs="12" md="2">
+                <Row className="justify-content-center">
+                  <Col xs="6" md="12">
+                    <img src="/img/logo3.png"  {...myprops} className="img-fluid mx-auto d-block" alt="er wei ma"/>
+                  </Col>
+                </Row>
+              </Col>
+              <Col xs="12" md="10">
+                <Row>
+                  <Col xs="5">
+                      <Label>场景编号: {item.scene}</Label>
+                  </Col>
+                  <Col xs="7">
+                      <Label>关注/总扫码数:121/13132</Label>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="name" sm={2} xl={1}>名称:</Label>
+                      <Col sm={10} xl={11}>
+                        <input type="text" className="form-control" id="name" 
+                        placeholder="便于识别二维码的拥有人或摆放场合"
+                        ref={node => { this.nameInput = node }} />
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="url" sm={2} xl={1}>URL:</Label>
+                      <Col sm={10} xl={11}>
+                        <Input id="url" name="url" disabled value={item.url}/>
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs="12">
+                    <FormGroup row>
+                      <Label for="ticket" sm={2} xl={1}>Ticket:</Label>
+                      <Col sm={10} xl={11}>
+                        <Input id="ticket" name="ticket" disabled  value={item.ticket}/>
+                      </Col>
+                    </FormGroup>
+                  </Col>
+                  <Col xs={12}>
+                    <Button color="primary" type="submit">保存修改</Button>
+                    <Button color="secondary" tag={Link} to="/links/qrcodes">返回</Button>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </ReduxBlockUi>
+          </Form>
+        </CardBlock>
+      </Card>
     ) 
   }
 }
@@ -89,16 +162,20 @@ class Qrcode extends Component {
 const mapStateToProps = (state/*, props*/) => {
   //qrcodes这个reducer返回的数据被放在qrcodes这个key下
   const { qrcodes } = state
-  console.log('state', qrcodes);
-
   return {
-    item: qrcodes.item ? {...qrcodes.item, imgurl:'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='+qrcodes.item.ticket } : {}
+    item: qrcodes.item
   }
+  // return {
+  //   item: qrcodes.item ? {...qrcodes.item, imgurl:'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='+qrcodes.item.ticket } : {}
+  // }
 }
 // 为组件提供事件处理方法
 const mapDispatchToProps = (dispatch, ownProps) => ({
   onSave: (name) => {
     actions.addQrcodeCreator({name: name})(dispatch)
+  },
+  onNew: () => {
+    dispatch(actions.newQrcode())
   }
 })
 

@@ -38,14 +38,11 @@ class QrcodeEdit extends Component {
   }
 
   handleNameChange = e => {
-    console.log('target', e.target.value)
-
     this.props.updateQrcodeCreator(e.target.value)
   }
 
   render() {
     const { item } = this.props
-    console.log('render', item)
     if (!item) {
       return (
         <h3>Loading...</h3>
@@ -54,7 +51,6 @@ class QrcodeEdit extends Component {
     const myprops =  {
       src: "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + item.ticket
     }
-    console.log('myprops', myprops)
     return (
         <Card>
           <CardBlock>
@@ -74,7 +70,7 @@ class QrcodeEdit extends Component {
                         <Label>场景编号: {item.scene}</Label>
                     </Col>
                     <Col xs="7">
-                        <Label>关注/总扫码数:121/13132</Label>
+                        <Label>关注/总扫码数:{item.scanCount}/{item.subCount}</Label>
                     </Col>
                     <Col xs="12">
                       <FormGroup row>
@@ -125,7 +121,6 @@ class QrcodeEdit extends Component {
 const mapStateToProps = (state/*, props*/) => {
   //qrcodes这个reducer返回的数据被放在qrcodes这个key下
   const { qrcodes } = state
-console.log('map props:', state)
   return {
     item: qrcodes.item
   }
