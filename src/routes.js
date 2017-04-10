@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 
@@ -9,6 +10,7 @@ import Dashboard from './views/Dashboard/'
 import Qrcodes from './views/Links/'
 import Qrcode from './views/Links/Qrcode'
 import QrcodeEdit from './views/Links/QrcodeEdit'
+import UserDetail from './views/Users/UserDetail'
 
 export default (
   <Router history={hashHistory}>
@@ -20,6 +22,10 @@ export default (
         <Route path="qrcodes" name="全部二维码" component={Qrcodes}/>
         <Route path="qrcode" name="新建二维码" component={Qrcode}/>
         <Route path="qrcode/(:id)" name="查看二维码" component={QrcodeEdit} />
+      </Route>
+      <Route path="users/" name="用户">
+        <IndexRoute component={UserDetail}/>
+        <Route path="detail" name="用户详情" component={UserDetail}/>
       </Route>
     </Route>
   </Router>

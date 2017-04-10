@@ -111,6 +111,7 @@ export const updateQrcodeCreator = (name) => (dispatch) => {
 //用户点击保存修改时
 export const updateQrcodeRequestCreator = (item) => (dispatch) => {
 	dispatch(updateQrcode(item))
+	// eslint-disable-next-line
 	let {id, ...updates} = item
 	let options = { 
 		method : 'PUT',

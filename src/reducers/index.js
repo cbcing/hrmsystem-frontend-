@@ -5,7 +5,10 @@
 
 import { combineReducers } from 'redux'
 import qrcodes from './qrcodes'
+//弹窗库
 import { reducer as notificationsReducer } from 'reapop'
+//redux表单库
+import { combineForms } from 'react-redux-form'
 
 //一个测试的reducer
 const userReducer = (state={}, action) => {
@@ -18,12 +21,27 @@ const userReducer = (state={}, action) => {
 		default:
 			return state;
 	}
+} 
+
+//修改用户页面的初始数据
+const initialUser = {
+	email: '',
+	username: '',
 }
 
-const rootReducers = combineReducers({
+// const rootReducers = combineReducers({
+// 	notifications: notificationsReducer(),
+// 	rrf: combineForms({
+// 		user: initialUser
+// 	}, 'rrf'),
+// 	qrcodes, 
+// 	userReducer,
+// })
+const rootReducers = combineForms({
 	notifications: notificationsReducer(),
+	user: initialUser,
 	qrcodes, 
-	userReducer
+	userReducer,
 })
 
 export default rootReducers

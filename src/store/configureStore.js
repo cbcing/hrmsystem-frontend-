@@ -2,7 +2,7 @@
 Redux的store，用于存储应用的状态state。
 此文件参考了redux官网代码examples/real-world/src/store/configureStore.prod.js
 */
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import { BlockUiMiddleware } from 'react-block-ui/redux'
 import rootReducer from '../reducers'
@@ -14,11 +14,13 @@ import rootReducer from '../reducers'
 //   applyMiddleware仅仅是redux提供的一个小工具函数，帮我们向redux注入中间件。
 //   BlockUiMiddleware是提供网页等待效果的一个库要求的中间件。
 const middleware = [thunk, BlockUiMiddleware]
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const configureStore = preloadedState => createStore(
 	rootReducer,
 	preloadedState,
-	applyMiddleware(...middleware)
-)
+	composeEnhancers(
+		applyMiddleware(...middleware)
+))
 
 export default configureStore
